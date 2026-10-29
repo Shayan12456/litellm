@@ -8,6 +8,7 @@ mod execution;
 mod http;
 mod logger;
 mod marshal;
+mod model_registry;
 mod preflight;
 mod python_settings;
 mod redis;
@@ -30,6 +31,8 @@ mod _native {
     use crate::errors::{RustBridgeDeclined, RustUpstreamError};
     #[pymodule_export]
     use crate::logger::NativeDiagnosticProcessor;
+    #[pymodule_export]
+    use crate::model_registry::bundled_model_cost_map;
     #[pymodule_export]
     use crate::redis::{NativeRedisClient, NativeRedisFailure};
     #[pymodule_export]
@@ -113,6 +116,7 @@ mod tests {
                 "NativeClickHouseSpendConfig",
                 "NativeClickHouseSpendStorage",
                 "trace_encode_error",
+                "bundled_model_cost_map",
                 "TokenCounter",
                 "Tokenizer",
                 "gil_stats",
