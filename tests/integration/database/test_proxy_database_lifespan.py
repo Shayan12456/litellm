@@ -10,6 +10,7 @@ from typing import Final, Literal, TypeAlias
 import psutil
 import pytest
 
+from tests.integration._support.client import eventually
 from tests.integration._support.database import read_rows, scratch_database
 
 pytestmark: Final = pytest.mark.timeout(180)
@@ -27,9 +28,13 @@ CONFIG: Final = (
 
 def _assert_database_idle() -> None:
     assert (
-        read_rows(
-            "SELECT pid FROM pg_stat_activity WHERE datname = current_database() AND pid <> pg_backend_pid()",
-            (),
+        eventually(
+            lambda: read_rows(
+                "SELECT pid FROM pg_stat_activity WHERE datname = current_database() AND pid <> pg_backend_pid()",
+                (),
+            ),
+            lambda rows: not rows,
+            seconds=5,
         )
         == []
     )
